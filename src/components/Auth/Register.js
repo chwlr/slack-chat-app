@@ -17,7 +17,8 @@ class Register extends React.Component {
     email: "",
     password: "",
     passwordConfirmation: "",
-    errors: []
+    errors: [],
+    loading: false
   };
 
   isFormValid = () => {
@@ -29,7 +30,7 @@ class Register extends React.Component {
       error = { message: "Fill in all fields" };
       this.setState({ errors: errors.concat(error) });
       return false;
-    } else if (this.isPasswordValid(this.state)) {
+    } else if (!this.isPasswordValid(this.state)) {
       //throw error
       error = { message: "Password is invalid" };
       this.setState({ errors: errors.concat(error) });
@@ -49,7 +50,7 @@ class Register extends React.Component {
   };
 
   isPasswordValid = ({ password, passwordConfirmation }) => {
-    if (password.length < 6 || passwordConfirmation < 6) {
+    if (password.length < 6 || passwordConfirmation.length < 6) {
       return false;
     } else if (password !== passwordConfirmation) {
       return false;
@@ -66,17 +67,29 @@ class Register extends React.Component {
       [event.target.name]: event.target.value
     });
   };
+
+  handleInputError = (errors, inputName) => {
+    return errors.some(error => error.message.toLowerCase().includes(inputName))
+      ? "error"
+      : "";
+  };
   handleSubmit = event => {
+    event.preventDefault();
     if (this.isFormValid()) {
-      event.preventDefault();
+      this.setState({ erros: [], loading: true });
       firebase
         .auth()
         .createUserWithEmailAndPassword(this.state.email, this.state.password)
         .then(createdUser => {
           console.log(createdUser);
+          this.setState({ loading: false });
         })
         .catch(err => {
           console.error(err);
+          this.setState({
+            errors: this.state.errors.concat(err),
+            loading: false
+          });
         });
     }
   };
@@ -87,7 +100,8 @@ class Register extends React.Component {
       email,
       password,
       passwordConfirmation,
-      errors
+      errors,
+      loading
     } = this.state;
 
     return (
@@ -95,7 +109,7 @@ class Register extends React.Component {
         <Grid textAlign="center" verticalAlign="middle" className="app">
           <Grid.Column style={{ maxWidth: 450 }}>
             <Header as="h2" icon color="orange" textAlign="center">
-              <Icon name="puzzle piece" color="orange" />
+              <Icon name="terminal" color="orange" />
               Register for DevChat
             </Header>
             <Form onSubmit={this.handleSubmit} size="large">
@@ -119,6 +133,7 @@ class Register extends React.Component {
                   onChange={this.handleChange}
                   type="email"
                   value={email}
+                  className={this.handleInputError(errors, "email")}
                 />
                 <Form.Input
                   fluid
@@ -129,6 +144,7 @@ class Register extends React.Component {
                   onChange={this.handleChange}
                   type="password"
                   value={password}
+                  className={this.handleInputError(errors, "password")}
                 />
                 <Form.Input
                   fluid
@@ -139,9 +155,19 @@ class Register extends React.Component {
                   onChange={this.handleChange}
                   type="password"
                   value={passwordConfirmation}
+                  className={this.handleInputError(
+                    errors,
+                    "passwordConfirmation"
+                  )}
                 />
 
-                <Button fluid color="orange" size="large">
+                <Button
+                  disabled={loading}
+                  className={loading ? "loading" : ""}
+                  fluid
+                  color="orange"
+                  size="large"
+                >
                   Submit
                 </Button>
               </Segment>
