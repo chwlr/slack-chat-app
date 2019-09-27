@@ -18,6 +18,7 @@ import { Provider, connect } from "react-redux";
 import { composeWithDevTools } from "redux-devtools-extension";
 import rootReducer from "./reducers/index";
 import { setUser } from "./actions/index";
+import Spinner from "./Spinner";
 
 const store = createStore(rootReducer, composeWithDevTools());
 
@@ -32,7 +33,9 @@ class Root extends React.Component {
   }
 
   render() {
-    return (
+    return this.props.isLoading ? (
+      <Spinner />
+    ) : (
       <Switch>
         <Route exact path="/" component={App} />
         <Route path="/login" component={Login} />
@@ -42,9 +45,13 @@ class Root extends React.Component {
   }
 }
 
+const mapStateToProps = state => ({
+  isLoading: state.user.isLoading
+});
+
 const RootWithAuth = withRouter(
   connect(
-    null,
+    mapStateToProps,
     { setUser }
   )(Root)
 );
