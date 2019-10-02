@@ -50,7 +50,7 @@ class UserPanel extends React.Component {
             </Header>
           </Grid.Row>
           {/* User DropDown */}
-          <Header inverted style={{ padding: "0.25em" }} as="h4">
+          <Header inverted style={{ padding: "1.2em" }} as="h4">
             <Dropdown
               trigger={
                 <span>
