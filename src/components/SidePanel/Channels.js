@@ -12,6 +12,31 @@ class Channels extends React.Component {
     modal: false
   };
 
+  componentDidMount() {
+    this.addListener();
+  }
+
+  addListener = () => {
+    let loadedChannels = [];
+    this.state.channelRef.on("child_added", snap => {
+      loadedChannels.push(snap.val());
+      this.setState({ channels: loadedChannels });
+    });
+  };
+
+  displayChannels = channels =>
+    channels.length > 0 &&
+    channels.map(channel => (
+      <Menu.Item
+        key={channel.id}
+        onClick={() => console.log(channel)}
+        name={channel.name}
+        style={{ opacity: 0.7 }}
+      >
+        # {channel.name}
+      </Menu.Item>
+    ));
+
   handeSubmit = event => {
     event.preventDefault();
     if (this.isFormValid(this.state)) {
@@ -66,9 +91,14 @@ class Channels extends React.Component {
             <span>
               <Icon name="exchange" /> Channels
             </span>{" "}
-            ({channels.length}) <Icon name="add" onClick={this.openModal} />
+            ({channels.length}){" "}
+            <Icon
+              name="add"
+              onClick={this.openModal}
+              style={{ cursor: "pointer" }}
+            />
           </Menu.Item>
-          {/* Channels */}
+          {this.displayChannels(channels)}
         </Menu.Menu>
         {/* modal component */}
         <Modal basic open={modal} onClose={this.closeModal}>

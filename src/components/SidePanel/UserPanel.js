@@ -52,6 +52,7 @@ class UserPanel extends React.Component {
           {/* User DropDown */}
           <Header inverted style={{ padding: "1.2em" }} as="h4">
             <Dropdown
+              style={{ padding: "0.25em" }}
               trigger={
                 <span>
                   <Image src={user.photoURL} spaced="right" avatar />
