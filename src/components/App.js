@@ -4,7 +4,7 @@ import "./App.css";
 import { connect } from "react-redux";
 import ColorPanel from "./ColorPanel/ColorPanel";
 import SidePanel from "./SidePanel/SidePanel";
-import Message from "./Message/Message";
+import Messages from "./Messages/Messages";
 import MetaPanel from "./MetaPanel/MetaPanel";
 
 const App = ({ currentUser }) => {
@@ -13,7 +13,7 @@ const App = ({ currentUser }) => {
       <ColorPanel />
       <SidePanel currentUser={currentUser} />
       <Grid.Column style={{ marginLeft: 320 }}>
-        <Message />
+        <Messages />
       </Grid.Column>
       <Grid.Column width={4}>
         <MetaPanel />
